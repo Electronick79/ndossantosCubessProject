@@ -12,6 +12,7 @@ myjsonfile: TextIO=open('jsonfile\dictionary.json', 'r')
 jsondata: str=myjsonfile.read()
 
 def get_data():df = read_csv('data.csv')
+def get_wufoo_data() -> dict:
 def df = def read_json():
 
 global jsondata
@@ -37,20 +38,20 @@ for page in range(10):
 obj = json.loads(jsondata)
 import json
 obj = json.loads(jsondata)
-print(str(obj["list"]))
-print(str(obj["lastName"]))
+#print(str(obj["list"]))
+#print(str(obj["lastName"]))
 
-list = obj['address']
-print(list)
-print(len(list))
+#list = obj['address']
+#print(list)
+#print(len(list))
 print(len(myjsonfile))
 
 for i in range(len(list)):
     print("address of" ",i,"  "is.......")
-    print("Street:", list[i].get("street"))
-    print("City:", list[i].get("city"))
-    print("State:", list[i].get("state"))
-    print("myJsonfile:", list[i].get("jsonfile"))
+    #print("Street:", list[i].get("street"))
+    #print("City:", list[i].get("city"))
+    #print("State:", list[i].get("state"))
+    #print("myJsonfile:", list[i].get("jsonfile"))
 
     if __name__ == 'main':
         main()
