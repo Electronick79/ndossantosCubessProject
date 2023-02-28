@@ -5,161 +5,119 @@ import urllib
 import any
 import requests
 import mysql.connector
-
-from mysql.connector import Error
-import pandas as pd
-
-base_url = 'https://ndossantos1.wufoo.com/api/code/2'
-username = 'ndossantos1'
-password = 'Electronick'
-
-# I got this part from the web page as an example: https://wufoo.github.io/docs/#all-forms
-
-password_manager = urllib.HTTPPasswordMgrWithDefaultRealm()
-password_manager.add_password(None, base_url, username, password)
-handler = urllib.HTTPBasicAuthHandler()
-opener = urllib.build_opener(handler)
-urllib.install_opener(opener)
-
-response = urllib.urlopen(base_url + 'ndossantos1.wufoo.com/forms/m1jxzvny0fifth1o/fields.json')
-data = json.load(response)
-print(json.dumps(data, indent=6, sort_keys=True))
-
-from requests.auth import HTTPBasicAuth;
-from urllib3.util import url;
-
-full_url = " https://ndossantos1.wufoo.com/api/code/api/v3/forms/cubes-project-proposal-submission/entries/json"
+import Tkinter
+import MySQLdb
+from Tkinter import IntVar
 
 
-# full_url = "https://ndossantos1.wufoo.com/forms/school-id-registration-form/"
+class Dossantos(Tkinter.Frame):
+       def __init__(self, BSU):
+        '''
+        Constructor
+        '''
+        Tkinter.Frame.__init__(self, BSU)
+        self.BSU_Professor = None
+        self.Nickson = None
+        self.BSU=BSU
+        self.initialize_user_interface()
 
-# myjsonfile: TextIO=open('jsonfile\dictionary.json', 'r')
-# jsondata: str=jsonfield.read()
+    def initialize_user_interface(self):
+        """"
+        Dossantos's MySQL server
+        """
+        self.BSU.title("DB operations")
+        self.BSU.grid_rowconfigure(0,weight=1)
+        self.BSU.grid_columnconfigure(0,weight=1)
+        self.BSU.config(background="lavender")
+
+        self.label_user=Tkinter.Label(self.BSU,text="DB User: ",anchor=Tkinter.W,background="dark slate gray",foreground="white")
+        self.label_password=Tkinter.Label(self.BSU,text="DB Password:", anchor=Tkinter.W,background="dark slate gray")
+
+        self.label_user.grid(row=0,column=0,sticky=Tkinter.E+Tkinter.W)
+        self.label_password.grid(row=1,column=0, sticky=Tkinter.E+Tkinter.W)
+
+        self.dbuser=Tkinter.Entry(self.parent)
+        self.dbpassword=Tkinter.Entry(self.BSU,show="BSU*******")
+
+        self.dbuser.grid(row=0,column=1,sticky=Tkinter.E+Tkinter.W)
+        self.dbpassword.grid(row=1,column=1,sticky=Tkinter.E+Tkinter.W)
 
 
-#####################################################################################
-def get_wufoo_data(wufoo_key=None) -> dict:
-    response = requests.get(url, auth=HTTPBasicAuth(wufoo_key, 'pass'))
-    if response.status_code != 200:
-        print(f"error getting data, response  :{response.status_code} and failing to get message: {response.request}")
-        sys.exit(-1)
-    json_response = response.json()
-    return json_response
-# df = read_csv('data.csv')
-# def df = def read_json():
-global json_data
-all_data = []
+    def item_insertion_window(self):
+        self.new_window=Tkinter.Toplevel(self)
+        self.new_window.wm_title(" My Best Professor")
+        self.new_window.grid_rowconfigure(0, weight=1)
+        self.new_window.grid_columnconfigure(0, weight=1)
 
-#####################################################################################
-res = requests.get('http://{ndossantos1}.wufoo.com/api/v3/forms/{identifier}/fields.{format}')
-print(res)
-if res:
-    print('Response OK')
-else:
-    print('Response Failed')
-    print(res.status_code)
-    print(res.headers)
+        self.exitb=Tkinter.Button(self.new_window,text="Exit",command=self.new_window.quit)
+        self.submitb=Tkinter.Button(self.new_window,text="Submit",command=self.increment_db)
+        self.exitb.grid(row=8,column=1)
+        self.submitb.grid(row=8,column=0,sticky=Tkinter.W)
 
-#####################################################################################
+        self.v=IntVar()
+        self.BSU_Professor=[('Dr.John Santor', 1), ('Dr.Black', 2),
+                      ('Dr. Helen Khojasteh ', 3), ('Dr. Kim', 4),
+                      ('Dr. Elif Demirbas', 5), ('Dr.Eping Li', 6),
+                      ('Dr. Roger Homer', 7)]
+        self.i=0
+        for self.txt, star in self.BSU_Professor:
+            self.i=self.i+1
+            self.rb=Tkinter.BSUbutton(self.new_window,text=self.txt,variable=self.v,value=star)
+            self.rb.grid(row=self.i,column=0,sticky=Tkinter.W)
 
-# DATA BASE  & SERVER CREATION
 
-# Server Creation
-def create_server_connection(host_name, user_name, user_password):
-    connection = None
-    try:
-        connection = mysql.connector.connect(
-            host = host_name,
-            user = user_name,
-            passwd = user_password,
-        )
+    def which_BSU_Students(self,BSU):
+        self.BSU_Students = {
+                        1:"Alina Pakiad",
+                        2:"Jonathan Opio",
+                        3:"Junseak Hur",
+                        4:"Maya Elysse",
+                        5:"Mauli Sanketh Mature",
+                        6:"Nickson Dossantos",
+                        7:"Rydia Hayes Huer",
+                        8: "Shatala Gaitode",
+                        9: "Suvarna Sahu",
+                        10: "Timathy Largeres",
+        }
+        return self.professor.get(BSU,"Unknown")
 
-        print("MySQL Database connection successful")
-    except error as err:
-        print(f"Error: '{err}'""")
-        return connection
-    #put mySQL terminal password
-pw =""
+    def increment_db(self):
+        #print self.v.get()
+        self.chosenprofessor=self.which_professor(self.v.get())
+        print self.chosenprofessor;
 
-# Database name
-db = "ndossantos1"
-connection = create_server_connection("localhost", roor, pw)
-
-# Create mysql_python
-def create_database(connection, query):
-        cursor = connection.cursor()
+        self.config = {
+                  'user': 'ndossantos1',
+                  'passwd': 'Electronick2',
+                  'host': '127.0.0.1',
+                  'db': 'ndossantos',
+        }
         try:
-            cursor.execute(query)
-            print("Database create successfully")
-        except Error as err:
-            print(f"Error: '{err}'")
-create_database_query = "Create database mysql_phyton"
-create_database(connection, create_database_query)
+            self.connecttodb=MySQLdb.connect(**self.config)
+        except MySQLdb.Error:
+               print  "Connexion error",
 
-# CONNECTING TO DATA BASE
-def create_db_connection(host_name, user_name, user_password, db_name):
-    Connection = None
-    try:
-        connection = mysql.connector.connection(
-            host = host_name,
-            user = user_name,
-            passwd =user_password,
-            database = db_name)
-        print("MySQL database connection Successfully")
-    except Error as err:
-        print(f"Error: '{err}""")
-    return connection
+        self.cursor=self.connecttodb.cursor()
 
-# Execute sql queries
-def execute_query(connection, query):
-    cusor = connection.cursor()
-    try:
-        cursor.execute(query)
-        connection.commit()
-        print("query was successfully")
-    except Error as err:
-        print(f'Error: '{err}'"")
+        self.cursor.execute("""BSU Board""",self.chosenprofessor)
+
+        self.connecttodb.commit()
+        self.connecttodb.close()
 
 
-#####################################################################################
-def get_data(https=None):
-    for page in range(10):
-        response = requests.get(
-            f"{https://ndossantos1.wufoo.com/forms/m1jxzvny0ftjh1o/} & api_key = {secrets.api_key()}" "{secrets.api_key}&page={page}");
-    if response.status_code != 300:
-        print("error getting data");
-        sys.exit(-1)
-        return all_data
+
+    def dbconnexion(self):
+        if self.dbuser.get()=="ndossantos1" and  self.dbpassword.get()=="Electronick2":
+            self.item_insertion_window()
+        else:
+            self.initialize_user_interface()
 
 
-alphabet = string.ascii_letters + string.digits
-while True:
-    password = ''.join(secrets.choice(alphabet) for i in range(3000))
-    if (any and any and sum(c.isdigit()
-                            for c in password) >= 3):
-        break
-        print(df.to_string())
-        print()
 
-
-# I got this part from professor Dr. John S
-
-###########################BLOCK#####################################################
 def main():
-    global save_data
-    data = get_wufoo_data()
-    data2 = data['Entries']
-    file_to_save = open("output.txt", 'w')
-    save_data(data2, save_file=file_to_save)
+    root=Tkinter.Tk()
+    d=Electronick2(root)
+    root.mainloop()
 
-    def save_data(data_to_save: list, save_file: object = None) -> object:
-        for entry in data_to_save:
-            for key, value in entry.items():
-                print(f"{key}: {value}", file=save_file)
-            # now print the spacer
-            print("++\n__",
-                  file=save_file)
-
-    if __name__ == 'main':
-        main()
-
+if __name__=="__main__":
+    main()
